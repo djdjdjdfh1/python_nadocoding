@@ -43,3 +43,21 @@ print('reg.intercept_', reg.intercept_) # y 절편 (b)
 ### 모델 평가
 print(reg.score(X_test, y_test)) # 테스트 세트를 통한 모델 평가
 print(reg.score(X_train, y_train)) # 훈련 세트를 통한 모델 평가
+
+### 경사 하강법
+from sklearn.linear_model import SGDRegressor
+# max_iter = 훈련 세트 반복 횟수 (Epoch 횟수)
+# eta0 = 학습률
+sr = SGDRegressor(max_iter=500, eta0=1e-4, random_state=0, verbose=1)
+sr.fit(X_train, y_train)
+
+plt.scatter(X_test, y_test, color='blue')
+plt.plot(X_train, sr.predict(X_train), color='green')
+plt.title('Score by hours (train data, SGD)')
+plt.xlabel('hours')
+plt.ylabel('score')
+plt.show()
+
+print(sr.coef_, sr.intercept_)
+print(sr.score(X_test, y_test))
+print(sr.score(X_train, y_train))
