@@ -25,7 +25,7 @@ print(reg.score(X, y))
 
 # 3-2. 다항 회귀
 from sklearn.preprocessing import PolynomialFeatures
-poly_reg = PolynomialFeatures(degree=2) # 2차 다항식
+poly_reg = PolynomialFeatures(degree=4) # 2차 다항식
 X_poly = poly_reg.fit_transform(X)
 print(X_poly[:5]) # [x] = [x^0, x^1, x^2] -> x가 3이라면 1, 3, 9
 print(X[:5])
@@ -53,3 +53,10 @@ plt.title('Score by hours (genius)')
 plt.xlabel('hours')
 plt.ylabel('score')
 plt.show()
+
+# 공부시간에 따른 시험 성적
+# 2시간을 공부했을떄 선형회귀 모델의 예측
+print(reg.predict([[2]])) 
+# 2시간을 공부했을떄 다항회귀 모델의 예측
+print(lin_reg.predict(poly_reg.fit_transform([[2]])))
+print(lin_reg.score(X_poly, y))
