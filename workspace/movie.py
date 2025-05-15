@@ -93,3 +93,58 @@ test_movie_indices = [i[0] for i in test_sim_scores[1:11]]
 df2['title'].iloc[test_movie_indices]
 
 print('추천영화', get_recommendations('Avatar'))
+
+### 다양한 요소 기반 추천 (장르, 감독, 키워드)
+df2.head(3)
+# print(df2.loc[0, 'genres'])
+
+from ast import literal_eval
+features = ['cast', 'crew', 'keywords', 'genres']
+for feature in features:
+    df2[feature] = df2[feature].apply(literal_eval)
+    print(df2[feature])
+df2.loc[0, 'crew']
+
+def get_director(x):
+    for i in x:
+        if i['job'] == 'Director':
+            return i['name']
+    return np.nan
+
+df2['director'] = df2['crew'].apply(get_director)
+# print(df2['director'].isnull())
+df2.loc[0, 'cast']
+df2.loc[0, 'genres']
+
+# 처음 3개의 데이터중에ㅓㅅ name에 해당하는 value만 추출
+def get_list(x):
+    if isinstance(x,list):
+        names = [i['name'] for i in x]
+        if len(names) > 3:
+            names = names[:3]
+        return names
+    return []
+
+features = ['cast', 'keywords', 'genres']
+for feature in features:
+    df2[feature] = df2[feature].apply(get_list)
+
+print(df2[['title', 'cast', 'director', 'keywords', 'genres']].head(3))
+
+def clean_data(x):
+    if isinstance(x, list):
+        return [str.lower(i.replace(" ", "")) for i in x]
+    else:   
+        if isinstance(x, str):
+            return str.lower(x.replace(" ", "")) 
+        else:
+            return ''
+features = ['cast', 'keywords', 'director', 'genres']
+for feature in features:
+    df2[feature] = df2[feature].apply(clean_data)
+
+print(df2[['title', 'cast', 'director', 'keywords', 'genres']].head(3))
+
+def create_soup(x):
+    return ' '.join(x['cast']) + ' ' + ' '.join(x['keywords']) + ' ' + x['director'] + ' ' + ' '.join(x['genres'])
+df2['soup'] = df2.apply(create_soup, axis=1)
